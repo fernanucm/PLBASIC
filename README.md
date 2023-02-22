@@ -84,23 +84,23 @@ This leads to the debugger user interface, which consists of several panels:
 * `FILES`. A basic file explorer to open BASIC programs.
 
 ```
-+-------- PROGRAM ./bas/ball.bas --------+             
-|00001:01 CLS                            |             
-|00010:01 DEF FNMOD10(X) = (X / 10 - INT(|         +- SCREEN -+
-|         X / 10)) * 10                  |         |          |
-|00020:01 DEF FNMOD5(X) = (X / 5 - INT(X |         |          |
-|         / 5)) * 5                      |         |      *   |
-|00030:01 L0 = INT(RND(1) * 4)           |         |          |
-|00040:01 C0 = INT(RND(1) * 10)          |         |          |
-|00050:01 DL = INT(RND(1) * 2 - 1)       |         +lc(2,7)---+
-|00060:01 DC = INT(RND(1) * 2 - 1)       |
-|00070:01 FOR I = 1 TO 10                |
-+----------------------------------------+
++-------------- PROGRAM ./bas/ball.bas ---------------+
+|00001:01 CLS                                         |
+|00010:01 DEF FNMOD10(X) = (X / 10 - INT(X / 10)) * 10|   +- SCREEN -+
+|00020:01 DEF FNMOD5(X) = (X / 5 - INT(X / 5)) * 5    |   |          |
+|00030:01 L0 = INT(RND(1) * 4)                        |   |          |
+|00040:01 C0 = INT(RND(1) * 10)                       |   |  *       |
+|00050:01 DL = INT(RND(1) * 2 - 1)                    |   |          |
+|00060:01 DC = INT(RND(1) * 2 - 1)                    |   |          |
+|00070:01 FOR I = 1 TO 10                             |   +lc(2,3)---+
+|00080:01 REM print l;" ";c                           |
+|00090:01 C1 = INT(ABS(FNMOD10(C0 + DC)))             |
++-----------------------------------------------------+
 +--------- CONTROL ---------+ +--------------- INSPECT ----------------+  
-| (R)UN    (S)TEP   (C)ONT  | |      C0: 6                             |  
-| SET(B)K  R(E)SET  RE(N)UM | |      C1: 6                             |  
+| (R)UN    (S)TEP   (C)ONT  | |      C0: 2                             |  
+| SET(B)K  R(E)SET  RE(N)UM | |      C1: 2                             |  
 | (Q)UIT   TAB (Move Focus) | |      DC: 0                             |  
-| SA(V)E  (O)PEN  REFRES(H) | |      DL: 0                             |  
+| SA(V)E  (O)PEN  REFRES(H) | |      DL: -1                            |  
 |     (M)OVE   RESI(Z)E     | |       I: 11                            |  
 |       Arrow Up/Down       | |      L0: 2                             |  
 | Page (U)p/(D)own: Paging  | |      L1: 2                             |  
@@ -140,7 +140,52 @@ These commands are the following:
 * `Home`:      Go to the first line of the panel in focus
 * `End`:       Go to the last line of the panel in focus
 
+#### Breakpoints
 
+You can toggle a breakpoint in the first row of the panel `PROGRAM` by hitting the `b` key.
+The breakpoint is displayed as an asterisk (`*`) between the statement number and the BASIC instruction.
+As long as a line can contain multiple statements, each one is split in different rows in the program listing, with the format *line number*`:`*statement number*.
+Thus, a breakpoint can be set in any statement of a given line, and many breakpoints can be set in a single program.
+
+For example, given the next call:
+
+```
+debug("10 for i=0 to 9 : print i; : next i").
+```
+
+A breakpoint can be set at the second statement (`02`) of the first line (`00010`), as displayed next:
+
+```
++-------- PROGRAM ---------+              
+|00010:01 FOR I = 0 TO 9   |              
+|00010:02*PRINT I;         | 
+|00010:03 NEXT I           |
+|                          |
++--------------------------+     
+```
+
+To set that breakpoint, first the down arrow has been pressed before setting on the breakpoint with the key `b` (then, the arrow up has been pressed to list all the program).
+Note that both variables and instructions are case-insensitive.
+The system can be configured to list programs in downcase (see section Configuration afterwards).
+
+#### Configuration
+File `flags.pl` contains configurations for different elements:
+
+##### Initial locations and sizes of panels
+
+##### Listings
+
+* Uppercase/Downcase.
+* Extra blanks to improve reading.
+
+##### Colors
+
+* Interface colors: Themes
+* Colouring elements
+   * Focused panel
+   * Panel headings
+   * Highlighted line
+* Keywords. It should be not difficult to add syntax highlighting (`TODO`)
 
 `TO BE CONTINUED`
 
