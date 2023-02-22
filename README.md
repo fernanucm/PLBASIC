@@ -7,25 +7,33 @@ The interpreter follows the (great) implementation and some guidelines of [`vict
 Any bug and bad design decisions in PLBASIC must be blamed on me.
 
 
-## Introduction
+## 1. Introduction
 This repository includes a text-based interface for both an interpreter and debugger of BASIC programs, implemented in SWI-Prolog.
 Being multiplatform, it can be used directly from sources (folder `./src`) having installed SWI-Prolog 9.0 or above. 
 In addition, an installer is provided for Windows, should you do not want to install SWI-Prolog.
 The installer (`setup.exe`) has been tested in Windows 10 64 bit (folder `./W10Installer`).
-This project was motivated to emulate the BASIC implementation in the Seiko Data 2000 watch from the 80's, coupled with the Seiko UC 2200 for writing (and printing) programs.
-Thus, the screen is originally set to a small size of 5 lines and 10 columns, but can be enlarged to other sizes (see the `flags.pl` file in the `./src` folder).
+
+This project was motivated to emulate the Microsoft BASIC implementation in the Seiko UC 2000 watch from the 80's, coupled with the Seiko UC 2200 for writing (and printing) programs.
+
+
+<img src="http://i.imgur.com/iAxehPR.jpg" alt= "SEIKO UC 2000 watch and UC 2200 keyboard and printer" width="300px">
+
+Image source: [TECHEBLOG](https://www.techeblog.com/before-smartwatches-there-was-the-seiko-uc-2000-wrist-computer-here-are-5-cool-facts/)
+
+Thus, the screen is originally set to a small size of 5 lines and 10 columns, but can be enlarged (or shortened!) to other sizes (see the `flags.pl` file in the `./src` folder).
+
 The intention of the project is to be neither complete nor accurate, but a raw approximation to the real thing.
 Some features are not present while others are added.
 
 
-### Caveats
+### 1.1. Caveats
 * Contents will be uploaded as time permits.
 * `TODO` indicates tasks to be done (in the expected near future).
 
 
-## A First Glance
+## 2. A First Glance
 
-### The BASIC Interpreter started from SWI-Prolog
+### 2.1. The BASIC Interpreter started from SWI-Prolog
 
 Start SWI-Prolog from the `./src` folder with either `pl` in Linuxes or `swipl-win.exe` in Windows, setting the behavior of double_quotes to codes.
 For example, open a `cmd` terminal in Windows and type:
@@ -76,9 +84,9 @@ Instead of passing the program as shown, a file can be selected otherwise, such 
 i.e., the result of computing the factorial of 5.
 
 
-### The BASIC Debugger started from SWI-Prolog
+### 2.2. The BASIC Debugger started from SWI-Prolog
 
-While the interpreter is a simple way to executing BASIC progrmas, the debugger (not present in the original Seiko watch) includes expected features of a simple debugger: step-by-step, breakpoints, inspects and the like.
+While the interpreter is a simple way to executing BASIC programs, the debugger (not present in the original Seiko watch) includes expected features of a simple debugger: step-by-step, breakpoints, inspects and the like.
 
 From the SWI-Prolog program prompt, write the following to consult and start the debugger for a given program (`reverse.bas` as an example):
 
@@ -124,7 +132,7 @@ This leads to the debugger user interface, which consists of several panels:
 
 The arrangement of panels may differ from this example, which corresponds to the execution (command `RUN` executed by pressing `r`) of the example program `ball.bas` (bouncing ball). They can be moved and resized at will with the the arrow keys when the command `MOVE` or `RESIZE` have been enabled by pressing the keys `m` and `z` respectively.
 
-#### Commands
+#### Debugger Commands
 
 The `CONTROL` panel lists the available commands and their keyboard shorcuts between parentheses. 
 These commands are the following:
@@ -152,6 +160,39 @@ These commands are the following:
 * `Home`:      Go to the first line of the panel in focus
 * `End`:       Go to the last line of the panel in focus
 
+##### Implementation note: 
+
+Since the `PageUp` and `PageDown` keys do not return an ASCII code that can be read with `get_single_char/1`, other keys have been selected as shortcuts (`u` and `d`, respectively).
+As well, the `STOP` command requires reading the keyboard without waiting for a key press, which can be better implemented with a new foreign predicate written in C/C++ (expected to be completed in the near future).
+
+#### Commands of the `FILES` panel
+
+This panel is opened with the debugger command `OPEN`, leading to something like this:
+
+```
++--- FILES ---+
+|./bas        |
+|<..>         |
+|ball.bas     |
+|factorial.bas|
+|lander.bas   |
+|matches.bas  |
+|reverse.bas  |
+|             |
++-------------+
+```
+
+The first row in the panel is the current folder.
+The highlighted row is the selected row for either opening the file or navigating into the folder.
+Folders are enclosed between angle brackets, and `<..>` means to go up in the folder tree. 
+
+The following commands are available for this panel:
+
+* `ArrowUp`:   Scroll up the panel
+* `ArrowDown`: Scroll down the panel
+* `ESCAPE`:    Cancel the `OPEN` command
+* `INTRO`:     Select the file to open / Navigate to the folder
+
 
 #### Breakpoints
 
@@ -163,7 +204,7 @@ Thus, a breakpoint can be set in any statement of a given line, and many breakpo
 For example, given the next call:
 
 ```prolog
-debug("10 for i=0 to 9 : print i; : next i").
+?- debug("10 for i=0 to 9 : print i; : next i").
 ```
 
 A breakpoint can be set at the second statement (`02`) of the first line (`00010`), as displayed next:
@@ -179,7 +220,7 @@ A breakpoint can be set at the second statement (`02`) of the first line (`00010
 
 To set that breakpoint, first the down arrow has been pressed before setting on the breakpoint with the key `b` (then, the arrow up has been pressed to list all the program).
 Note that both variables and instructions are case-insensitive.
-The system can be configured to list programs in downcase (see section Configuration afterwards).
+The system can be configured to list programs in downcase letters (see next section Configuration).
 
 
 #### Configuration
@@ -247,22 +288,30 @@ let(off). % Change to on if you prefer LET to appear
 
   You can change or add new themes at will in these themes.
 
-* Colouring elements
+* Coloring elements
 
   File `color.pl` contains color definitions for different elements (focused panels, panel headings and highlighted lines).
   Available color names are listed in the predicate `color/3`, and resumed next:
   
-  `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `bright_black`, `bright_red`, `bright_green`, `bright_yellow`, `bright_blue`, `bright_magenta`, `bright_cyan`, `bright_white`
+  `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `bright_black`, `bright_red`, `bright_green`, `bright_yellow`, `bright_blue`, `bright_magenta`, `bright_cyan`, `bright_white`
   
-    * Focused panel
+    * Focused panel (title bar)
    
     ```prolog
     text_color(focused, fb(bright_blue, white)).
     ```
 
-    * Panel headings
+    * Panel headings (such as the path in the `FILE` panel)
    
-    * Highlighted line
+    ```prolog
+    text_color(heading, fb(bright_white, bright_black)).
+    ```
+    
+    * Highlighted line (in the `PROGRAM` panel)
+   
+    ```prolog
+    text_color(highlighted, fb(bright_blue, white)).
+    ```
     
 * Keywords. It should not be difficult to add syntax highlighting (`TODO`)
 
