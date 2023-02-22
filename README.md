@@ -1,9 +1,11 @@
 # PLBASIC
 Interpreter and debugger of BASIC programs implemented in Prolog
 
+
 ## Credits
 The interpreter follows the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/).
 Any bug and bad design decisions in PLBASIC must be blamed on me.
+
 
 ## Introduction
 This repository includes a text-based interface for both an interpreter and debugger of BASIC programs, implemented in SWI-Prolog.
@@ -15,17 +17,26 @@ Thus, the screen is originally set to a small size of 5 lines and 10 columns, bu
 The intention of the project is to be neither complete nor accurate, but a raw approximation to the real thing.
 Some features are not present while others are added.
 
+
 ### Caveats
 * Contents will be uploaded as time permits.
 * `TODO` indicates tasks to be done (in the expected near future).
+
 
 ## A First Glance
 
 ### The BASIC Interpreter started from SWI-Prolog
 
-After starting SWI-Prolog from the `./src` folder with either pl in Linuxes or swipl-win.exe in Windows, write the following at the SWI-Prolog prompt:
+Start SWI-Prolog from the `./src` folder with either `pl` in Linuxes or `swipl-win.exe` in Windows, setting the behavior of double_quotes to codes.
+For example, open a `cmd` terminal in Windows and type:
 
+```bat
+C:\PLBASIC> swipl-win.exe -g "set_prolog_flag(double_quotes, codes)"
 ```
+
+Then, write the following at the SWI-Prolog prompt:
+
+```prolog
 ?- [basic].
 ?- run("10 print ""Hello!""").
 ```
@@ -46,7 +57,7 @@ Here, SCREEN is the panel surrounding the watch screen. Below, the numbers show 
 
 Instead of passing the program as shown, a file can be selected otherwise, such as in:
 
-```
+```prolog
 ?- run('./bas/factorial.bas').
 ```
 
@@ -64,13 +75,14 @@ Instead of passing the program as shown, a file can be selected otherwise, such 
 
 i.e., the result of computing the factorial of 5.
 
+
 ### The BASIC Debugger started from SWI-Prolog
 
 While the interpreter is a simple way to executing BASIC progrmas, the debugger (not present in the original Seiko watch) includes expected features of a simple debugger: step-by-step, breakpoints, inspects and the like.
 
 From the SWI-Prolog program prompt, write the following to consult and start the debugger for a given program (`reverse.bas` as an example):
 
-```
+```prolog
 ?- [debug].
 ?- debug('./bas/reverse.bas').
 ```
@@ -140,6 +152,7 @@ These commands are the following:
 * `Home`:      Go to the first line of the panel in focus
 * `End`:       Go to the last line of the panel in focus
 
+
 #### Breakpoints
 
 You can toggle a breakpoint in the first row of the panel `PROGRAM` by hitting the `b` key.
@@ -149,7 +162,7 @@ Thus, a breakpoint can be set in any statement of a given line, and many breakpo
 
 For example, given the next call:
 
-```
+```prolog
 debug("10 for i=0 to 9 : print i; : next i").
 ```
 
@@ -168,24 +181,90 @@ To set that breakpoint, first the down arrow has been pressed before setting on 
 Note that both variables and instructions are case-insensitive.
 The system can be configured to list programs in downcase (see section Configuration afterwards).
 
+
 #### Configuration
 File `flags.pl` contains configurations for different elements:
 
+
 ##### Initial locations and sizes of panels
+
+Screen:
+```prolog
+screen_panel_location(lc(0, 43)).
+screen_panel_size(rc(5, 10)).
+```
+
+Program:
+
+```prolog
+program_panel_location(lc(0, 0)).
+program_panel_size(rc(10, 40)).
+```
+
+Inspect:
+```prolog
+inspect_panel_location(lc(25, 0)).
+inspect_panel_size(rc(10, 40)).
+```
+
+Control:
+```prolog
+control_panel_location(lc(13, 0)).
+control_panel_size(rc(10, 27)).
+```
+
 
 ##### Listings
 
 * Uppercase/Downcase.
+```prolog
+uppercase(on). % Default is uppercase (change to off otherwise)
+```
+
 * Extra blanks to improve reading.
+
+```prolog
+optional_spaces(on). % Change to off to remove optional spaces
+```
+
+* `LET` instruction.
+```prolog
+let(off). % Change to on if you prefer LET to appear
+```
+
 
 ##### Colors
 
 * Interface colors: Themes
+
+  SWI-Prolog allows to load color themes as defined in Prolog files.
+  This project includes a couple of themes in the folder `./src/themes`.
+  For example, to select white letters over a blue background (as some old 8 bit computers enjoyed):
+
+  ```prolog
+  ?- [library('./themes/blue_while.pl')].
+  ```
+
+  You can change or add new themes at will in these themes.
+
 * Colouring elements
-   * Focused panel
-   * Panel headings
-   * Highlighted line
-* Keywords. It should be not difficult to add syntax highlighting (`TODO`)
+
+  File `color.pl` contains color definitions for different elements (focused panels, panel headings and highlighted lines).
+  Available color names are listed in the predicate `color/3`, and resumed next:
+  
+  `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `bright_black`, `bright_red`, `bright_green`, `bright_yellow`, `bright_blue`, `bright_magenta`, `bright_cyan`, `bright_white`
+  
+    * Focused panel
+   
+    ```prolog
+    text_color(focused, fb(bright_blue, white)).
+    ```
+
+    * Panel headings
+   
+    * Highlighted line
+    
+* Keywords. It should not be difficult to add syntax highlighting (`TODO`)
 
 `TO BE CONTINUED`
 
