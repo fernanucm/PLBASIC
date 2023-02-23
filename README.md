@@ -315,5 +315,205 @@ let(off). % Change to on if you prefer LET to appear
     
 * Keywords. It should not be difficult to add syntax highlighting (`TODO`)
 
+## Supported Instruction Set
+
+Following the (acknowledeged incomplete) [online manual](https://gtello.pagesperso-orange.fr/seikomanual.pdf) of Guillaume Tello (2008) for this watch, the next instructions, functions and operators below are supported:
+
+### Instructions
+
+* `RUN [li]`
+  Runs the program [starting at line li].
+  
+* `LIST [li]`
+  Display the listing of the program using the line number order.	With li specified, starts from this line til the end.
+
+* `NEW`
+  Erases the whole program and variables from memory.
+  
+* `CLEAR`
+  Erases all variables values and definitions (those declared with DIM). The program remains in memory.
+  
+* `CONT`
+  If a program is stopped with STOP (instruction or key), you can go on with it using this command. Program should not be modified, variables can.
+
+* `DIM var(n1 [,n2,..,nmax])`
+	Declares var as an array, it seems that max=5.
+  
+* `[LET] var=expression`
+  Computes the expression and stores it into var. LET is optional.
+  
+* `DEF FNvar(x)=..expression of x..`
+  Declares FNvar as a function, then to use it, as a numeric value, just write FNvar(x).
+
+* `CLS`
+  Clears the screen and the cursor goes to the upper left.
+  
+* `BEEP`
+  Outputs a beep sound.
+
+* `REM text`
+  Inserts a remark in the program. 
+  
+* `FOR var=x TO x’ [STEP x’’]`
+	`instructions`
+  `NEXT var`
+  Initialises `var` to `x` and repeats the instruction block until `var>x’`.
+	If no `STEP` is specified then, `STEP=1` to increment var at each loop.
+	If `x’’<0`, then loop until `var<x’`.
+
+* `GOTO li`
+  Jumps to the specified line.
+
+* `ON n GOTO li1 [, li2…., limax]`
+  Computes the integer value of `n`, and, if `n=1` jumps to `li1`, if `n=2` to li2, etc.
+	if `n<1` or `n>max` then no jump is performed and go to the next instruction.
+
+* `IF condition THEN [instructions|li]`
+  If a condition is true (different from zero) then the following instructions are executed, or jump to the specified line number li. If the condition is false (equal to zero) then executions goes on to the next line.
+
+* `PRINT [ str or x[, or ; [etc…]] ]`
+  If separated by `;` they are displayed next to the previous `;` if separated by `,` an 8-width tabulator is applied between values. Each numeric value is preceeded by a space if positive or by a `-` if negative.
+  
+* `INPUT [«message» ;]var1[,var2,… ]`
+  Display the message, if present, and ask for the values of each variable. You must separate the values with `,`. 
+  
+* `DATA value_list`
+  Inserts a list of immediate values (reals or strings, but not expressions) in the program. 
+
+* `READ var1 [,var2,…]`
+  Allows you to parse them (as an `INPUT` but without a human intervention).
+
+* `RESTORE [li]`
+  Tells from which DATA line the next `READ` should pick its values.
+  
+* `STOP`
+  Stops the execution.
+  
+* `CONT`
+  Resumes a stopped execution.
+  
+* `END`
+  Stops the program. Cannot be resumed.
+
+### Functions
+
+* `FRE(x)`
+	Returns the number of free bytes, 2922 at start. The argument `x` is ignored.
+
+* `RND(x)`
+	Returns a pseudo-random number from in [0;1[.
+	* If `x>0`, returns the next random number.
+	* If `x=0`, returns the last random number.
+	* If `x<0`, initilalizes a new serie of random numbers according to `x`.
+
+* `SQR(x)`
+	Returns the square root of the positive value `x`.
+
+* `INT(x)`
+	Returns the highest integer lower or equal to `x`.
+
+* `ABS(x)`
+	Returns the absolute value of `x`.
+
+* `SGN(x)`
+	Returns the sign of `x` in this way:
+	* if `x>0` then `SGN(x)=1`
+	* if `x<0` then `SGN(x)=-1`
+	* if `x=0` then `SGN(x)=0`
+
+* `COS(x)`
+Returns the cosine of the `x` argument.	The angle is in radians.
+
+* `SIN(x)`
+Returns sine of the `x` argument.	The angle is in radians.
+
+* `TAN(x)`
+Returns the tangent of the `x` argument. The angle is in radians.
+
+* `ATN(x)`
+	Returns the reverse tangent of the `x` argument. The angle is in radians.
+
+* `EXP(x)`
+	Returns the exponential of `x` (base is e=2.71828…).
+
+* `LOG(x)`
+	Returns the logarithm of `x` (base is e=2.71828…).
+
+* `INKEY$` `TODO` (Requires the external predicate to be built)
+	Returns the current key pressed, else a null string.
+
+* `ASC(str)`
+  Returns the ASCII code of the first character of the string.
+  
+* `CHR$(x)`
+	Returns a one character string corresponding to the `x` ASCII code.
+
+* `VAL(str)`
+  Returns a real described in the string.
+
+* `STR$(x)`
+	Returns the string descibing the real `x`.
+
+* `LEN(str)`
+	Returns the length of `str`.
+
+* `LEFT$(str,n)`
+	Returns a string with the `n` leftmost characters of `str`.
+
+* `RIGHT$(str,n)`
+	Returns a string with the n rightmost characters of str.
+
+* `MID$(str,n1,n2)`
+	Returns a string with `n2` characters long starting at position `n1` in str.
+
+* `TAB(n)`
+  Specifies how many spaces before next printing. It is used as part of `PRINT`.
+  
+* `POS(0)`
+	Pseudo-variable that returns the current cursor column from 0 to 9.
+
+* `CSRLIN`
+	Pseudo variable that returns the current cursor line from 0 to 3.
+
+* `LOCATE n1,n2`
+	Places the cursor at the given location:
+	`n1` is the column from 0 to 9
+	`n2` is the line from 0 to 3.
+
+### Operators
+
+* Arithmetic operators: `+` `-` `*` `/` `^`
+
+* Logical operators: `=` `>` `<` `>=` `>=` `<>` `AND` `OR` `NOT`
+
+Parentheses can be used as needed to surround expressions.
+
+### Additional supported features
+
+* `IF condition THEN [instructions|li] ELSE [instructions|li]`
+
+* Fractional numbers.
+
+* Values in `READ` can be expressions.
+
+
+### Unsupported features
+
+* Interactive commands at the screen.
+
+* In the original system, the `;` separator could be omitted between an immediate string and a value. For example: `PRINT "X=";X;"Km" can be compacted as `PRINT “X=”X”Km”`. In this implementation, this is not allowed.
+
+* `EDIT [li]`
+  Edition of line `li`.
+  
+* `LLIST [li]`
+  Same as `LIST` but printed on paper instead of displayed on screen.
+
+* `LPRINT [str or x[, or ; [etc…]]]`
+  The same as `PRINT` but for the printer
+
+* Error messages. (`TODO`)
+
+
 `TO BE CONTINUED`
 
