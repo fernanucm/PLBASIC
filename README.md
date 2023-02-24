@@ -4,7 +4,9 @@ Interpreter and debugger of BASIC programs implemented in Prolog
 
 ## Credits
 The interpreter follows the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/).
-Any bug and bad design decisions in PLBASIC must be blamed on me.
+Any bug and bad design decisions in PLBASIC must be blamed on me. 
+
+Some example programs have been adapted from [8bitworkshop](https://8bitworkshop.com/).
 
 
 ## 1. Introduction
@@ -139,7 +141,7 @@ These commands are the following:
 
 * `RUN`:       Execute the program up to its end or first breakpoint
 * `STEP`:      Execute the current statement (which is shown highlighted)
-* `% STOP`: Stop the execution (`TODO`. Requires external DLL to be built)
+* `% STOP`:    Stop the execution (`TODO`. Requires external DLL to be built)
 * `CONT`:      Continue the execution
 * `SETBK`:     Set breakpoint in the current (highlighted) line
 * `RESET`:     Reset the debugging session (reload the program)
@@ -322,28 +324,28 @@ Following the (acknowledeged incomplete) [online manual](https://gtello.pagesper
 ### Instructions
 
 * `RUN [li]`
-  Runs the program [starting at line li].
+  Runs the program (starting at line `li` is provided).
   
 * `LIST [li]`
-  Display the listing of the program using the line number order.	With li specified, starts from this line til the end.
+  Display the listing of the program using the line number order. With `li` specified, starts from this line til the end.
 
 * `NEW`
   Erases the whole program and variables from memory.
   
 * `CLEAR`
-  Erases all variables values and definitions (those declared with DIM). The program remains in memory.
+  Erases all variables values and definitions (those declared with `DIM`). The program remains in memory.
   
 * `CONT`
-  If a program is stopped with STOP (instruction or key), you can go on with it using this command. Program should not be modified, variables can.
+  If a program is stopped with `STOP` (instruction or key), execution can be resumed (`TODO`: Not useful until interactive commands are supported).
 
-* `DIM var(n1 [,n2,..,nmax])`
-	Declares var as an array, it seems that max=5.
+* `DIM var(n1 [,n2,..,max])`
+  Declares `var` as an array, it seems that `max`=5.
   
 * `[LET] var=expression`
-  Computes the expression and stores it into var. LET is optional.
+  Computes the expression and stores it into var. `LET` is optional.
   
 * `DEF FNvar(x)=..expression of x..`
-  Declares FNvar as a function, then to use it, as a numeric value, just write FNvar(x).
+  Declares FNvar as a function, then to use it, as a numeric value, just write `FNvar(x)`.
 
 * `CLS`
   Clears the screen and the cursor goes to the upper left.
@@ -369,15 +371,15 @@ Following the (acknowledeged incomplete) [online manual](https://gtello.pagesper
 	if `n<1` or `n>max` then no jump is performed and go to the next instruction.
 
 * `IF condition THEN [instructions|li]`
-  If a condition is true (different from zero) then the following instructions are executed, or jump to the specified line number li. If the condition is false (equal to zero) then executions goes on to the next line.
+  If a condition is true (different from zero) then the following instructions are executed, or jump to the specified line number `li`. If the condition is false (equal to zero) then executions goes on to the next line.
 
 * `PRINT [ str or x[, or ; [etc…]] ]`
-  If separated by `;` they are displayed next to the previous `;` if separated by `,` an 8-width tabulator is applied between values. Each numeric value is preceeded by a space if positive or by a `-` if negative.
+  If separated by `;` they are displayed next to the previous `;` if separated by `,` an 8-width tabulator is applied between values. Each numeric value is preceded by a space if positive or by a `-` if negative.
   
 * `INPUT [«message» ;]var1[,var2,… ]`
-  Display the message, if present, and ask for the values of each variable. You must separate the values with `,`. 
+  Display the message, if present, and ask for the values of each variable.
   
-* `DATA value_list`
+* `DATA value1[,value2,...]`
   Inserts a list of immediate values (reals or strings, but not expressions) in the program. 
 
 * `READ var1 [,var2,…]`
@@ -443,13 +445,13 @@ Returns the tangent of the `x` argument. The angle is in radians.
 	Returns the current key pressed, else a null string.
 
 * `ASC(str)`
-  Returns the ASCII code of the first character of the string.
+  Returns the ASCII code of the first character of the string `str`.
   
 * `CHR$(x)`
 	Returns a one character string corresponding to the `x` ASCII code.
 
 * `VAL(str)`
-  Returns a real described in the string.
+  Returns a real described in the string `str`.
 
 * `STR$(x)`
 	Returns the string descibing the real `x`.
@@ -461,10 +463,10 @@ Returns the tangent of the `x` argument. The angle is in radians.
 	Returns a string with the `n` leftmost characters of `str`.
 
 * `RIGHT$(str,n)`
-	Returns a string with the n rightmost characters of str.
+	Returns a string with the n rightmost characters of `str`.
 
 * `MID$(str,n1,n2)`
-	Returns a string with `n2` characters long starting at position `n1` in str.
+	Returns a string with `n2` characters long starting at position `n1` in `str`.
 
 * `TAB(n)`
   Specifies how many spaces before next printing. It is used as part of `PRINT`.
@@ -509,8 +511,14 @@ Parentheses can be used as needed to surround expressions.
 * `LLIST [li]`
   Same as `LIST` but printed on paper instead of displayed on screen.
 
+* `MLIST [li]`
+  Same as `LIST` but with output to the memorandum memory.
+
 * `LPRINT [str or x[, or ; [etc…]]]`
-  The same as `PRINT` but for the printer
+  The same as `PRINT` but for the printer.
+
+* `MPRINT [str or x[, or ; [etc…]]]`
+  The same as `PRINT` but with output to the memorandum memory.
 
 * Error messages. (`TODO`)
 
