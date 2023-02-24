@@ -498,6 +498,9 @@ Parentheses can be used as needed to surround expressions.
 
 * Values in `READ` can be expressions.
 
+* `PAUSE time`
+  Time in seconds to pause execution.
+
 
 ### Unsupported features
 
