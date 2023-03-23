@@ -526,5 +526,50 @@ Parentheses can be used as needed to surround expressions.
 * Error messages. (`TODO`)
 
 
+## 3. Implementation
+
+### 3.1. The Interpreter
+
+As already said at the beginning, the interpreter is based on the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/).
+The reader is advised to first read his blog before continuing this.
+
+PLBASIC adds several improvements with respect to that:
+
+* Module system.
+* Lexer.
+* Parser.
+* Resizeable screen.
+* Multiple sentences in a line. Require a new line numbering: Line-StatementNumber.
+* Functions in expressions.
+* Evaluation of Boolean and string expressions.
+* Floats (`float`/3) and fractionals (`frac`/2) are identified, though both are treated as floats.
+* Expressions in `GOTO` statements.
+* Several statements are allowed in `IF` statements.
+* `ELSE` statements. However, this is unsupported in Seiko Data 2000.
+* Logical operators `AND`, `OR` and `NOT`.
+* Augmented supported instruction set. Including in particular:
+  * `DATA` and `RESTORE`.
+* Bug fixes:
+  * `NEXT` test was incorrect. In addition to the comment already at the web page, it only worked for ascending `FOR` indexes.
+
+PLBASIC lacks with respect to [1]:
+
+* A low-level binary arithmetic for floating point operations. Instead, Prolog floating point arithmetic is used. Results are truncated to conform with the precision of the Seiko Data/UC 2000.
+
+PLBASIC deviates from [1] in:
+
+- Input/Ouput arguments such as `CompIn` and `CompOut` rewritten as `CompIn`-`CompOut` instead of DCG for state passing (DCG led to cumbersome writings with `{}` and troublesomes with accessing the state). However, a better approach would be to use ECDG with a customized accumulator, similar to what is used in the lexer.
+- Functions. PLBASIC benefits from representing a function argument with a logical variable, simplifying the implementation and avoiding placing frames in the heap.
+
+
+## References
+
+[1] Victor Lagerkvist. "Writing a BASIC interpreter. Parts 1-4". In "The Blogging of Prolog". 
+  * https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/
+  * https://prologomenon.wordpress.com/2020/11/03/writing-a-basic-interpreter-part-2/
+  * https://prologomenon.wordpress.com/2020/11/21/writing-a-basic-interpreter-part-3/
+  * https://prologomenon.wordpress.com/2020/12/20/writing-a-basic-interpreter-part-4/
+  
+
 `TO BE CONTINUED`
 
