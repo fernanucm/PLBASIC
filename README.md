@@ -532,6 +532,7 @@ Parentheses can be used as needed to surround expressions.
 
 As already said at the beginning, the interpreter is based on the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/).
 The reader is advised to first read his blog before continuing this.
+Its code is located at [GitHub](https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec).
 
 PLBASIC adds several improvements with respect to that:
 
@@ -560,6 +561,7 @@ PLBASIC deviates from [1] in:
 
 - Input/Ouput arguments such as `CompIn` and `CompOut` rewritten as `CompIn`-`CompOut` instead of DCG for state passing (DCG led to cumbersome writings with `{}` and troublesomes with accessing the state). However, a better approach would be to use ECDG with a customized accumulator, similar to what is used in the lexer.
 - Functions. PLBASIC benefits from representing a function argument with a logical variable, simplifying the implementation and avoiding placing frames in the heap.
+- Array elements are not reset when declaring the array with `DIM`; instead, each element is reset for the first read access. 
 
 
 ## References
