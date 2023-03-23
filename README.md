@@ -532,7 +532,7 @@ Parentheses can be used as needed to surround expressions.
 
 As already said at the beginning, the interpreter is based on the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/).
 The reader is advised to first read his blog before continuing this.
-Its code is located at [GitHub](https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec).
+Its code is located at [Gist](https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec).
 
 PLBASIC adds several improvements with respect to that:
 
