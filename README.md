@@ -3,33 +3,35 @@ Interpreter and debugger of BASIC programs implemented in Prolog
 
 
 ## Credits
-The interpreter follows the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/).
+The interpreter follows the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/) [1].
 Any bug and bad design decisions in PLBASIC must be blamed on me. 
 
 Some example programs have been adapted from [8bitworkshop](https://8bitworkshop.com/).
 
 
 ## 1. Introduction
+
 This repository includes a text-based interface for both an interpreter and debugger of BASIC programs, implemented in SWI-Prolog.
 Being multiplatform, it can be used directly from sources (folder `./src`) having installed SWI-Prolog 9.0 or above. 
 In addition, an installer is provided for Windows, should you do not want to install SWI-Prolog.
 The installer (`setup.exe`) has been tested in Windows 10 64 bit (folder `./W10Installer`).
 
 This project was motivated to emulate the Microsoft BASIC implementation in the Seiko UC 2000 watch from the 80's, coupled with the Seiko UC 2200 for writing (and printing) programs.
-
+The manuals can be found at [3].
 
 <img src="http://i.imgur.com/iAxehPR.jpg" alt= "SEIKO UC 2000 watch and UC 2200 keyboard and printer" width="300px">
 
 Image source: [TECHEBLOG](https://www.techeblog.com/before-smartwatches-there-was-the-seiko-uc-2000-wrist-computer-here-are-5-cool-facts/)
 
-Thus, the screen is originally set to a small size of 5 lines and 10 columns, but can be enlarged (or shortened!) to other sizes (see the `flags.pl` file in the `./src` folder).
+Thus, the screen is originally set to a small size of 5 lines and 10 columns, but can be enlarged (or even shortened!) to other sizes (see the `flags.pl` file in the `./src` folder).
 
 The intention of the project is to be neither complete nor accurate, but a raw approximation to the real thing.
 Some features are not present while others are added.
 
 
 ### 1.1. Caveats
-* Contents will be uploaded as time permits.
+
+* More contents will be uploaded as time permits.
 * `TODO` indicates tasks to be done (in the expected near future).
 
 
@@ -272,7 +274,7 @@ optional_spaces(on). % Change to off to remove optional spaces
 
 * `LET` instruction.
 ```prolog
-let(off). % Change to on if you prefer LET to appear
+let(off). % Change to on if you prefer LET to appear in listings
 ```
 
 
@@ -523,46 +525,79 @@ Parentheses can be used as needed to surround expressions.
 * `MPRINT [str or x[, or ; [etc…]]]`
   The same as `PRINT` but with output to the memorandum memory.
 
-* Error messages. (`TODO`)
+* Original error messages (`TODO`).
+  Currently, lexical, syntactic and run-time error messages are raised, but they do not match the original ones.
 
 
 ## 3. Implementation
 
 ### 3.1. The Interpreter
 
-As already said at the beginning, the interpreter is based on the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/).
+As already said at the beginning, the interpreter is based on the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/) [1].
 The reader is advised to first read his blog before continuing this.
-Its code is located at [Gist](https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec).
+Its code is located at [Gist](https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec) [2].
 
-PLBASIC adds several improvements with respect to that:
+Basically, [1] defines a `comp` object as a SWI-Prolog dict data structure holding several named arguments:  program, memory, instruction counter, stack, and status.
+Here, some other arguments have been added, which will be commented along this section.
+
+#### PLBASIC improvements with respect to Prolog BASIC 0.1
 
 * Module system.
-* Lexer.
-* Parser.
-* Resizeable screen.
-* Multiple sentences in a line. Require a new line numbering: Line-StatementNumber.
-* Functions in expressions.
+* Lexer. Implemented with EDCG's with two purposes: hide both the list of codes, and the line and column numbers used for error reporting.
+* Parser. Implemented with DCG's it might be implemented with EDCG's as well. 
+* Error reporting in parsing and running programs. The new named argument `runline` for the `comp` object has been added to report the line for the statement being executed.
+* Resizeable screen. With a default screen 10 column wide and 4 line height, this tiny dimensions can be enlarged to better display results and listings. The screen is implemented as an additional named argument in the dict for the `comp` object. Also, the named argument `cursor` has been added to hold the current line and column where the cursor is located, as a term `lc(Line, Column)`.
+* Multiple sentences in a line separated by colons. This requires a new line numbering: LineNumber-StatementNumber. In particular, several statements are allowed in `IF` statements.
+* `ELSE` statements. However, this is unsupported in Seiko Data 2000.
 * Evaluation of Boolean and string expressions.
 * Floats (`float`/3) and fractionals (`frac`/2) are identified, though both are treated as floats.
 * Expressions in `GOTO` statements.
-* Several statements are allowed in `IF` statements.
-* `ELSE` statements. However, this is unsupported in Seiko Data 2000.
 * Logical operators `AND`, `OR` and `NOT`.
-* Augmented supported instruction set. Including in particular:
-  * `DATA` and `RESTORE`.
+* `GOTO` and `GOSUB` to a non-existent line number `L`. As in [3], a jump like this ends in the next line to `L`.
+* Augmented supported instruction set (almost complete with respecto to [3]). Including in particular:
+  * `DATA` and `RESTORE`. For this, the new named argument `data` is added to the `comp` object, storing the address of the current data to read (Line-Statement-Element).
+  * `LIST`. Program listings are reconstructed from the internal representation of the program. To reconstruct a `REM` statement, the original remark is kept as an argument of this statement.
+  * `ON` `expr` `GOTO`/`GOSUB` ...
+* Test suite. Having the file `basic.pl` consulted, the goal `basic:test` starts testing.
+* Color themes.
 * Bug fixes:
   * `NEXT` test was incorrect. In addition to the comment already at the web page, it only worked for ascending `FOR` indexes.
 
-PLBASIC lacks with respect to [1]:
+The `comp` object also includes the named argument `source`, which stores the program source: either a file name or a list of codes for the BASIC program.
 
-* A low-level binary arithmetic for floating point operations. Instead, Prolog floating point arithmetic is used. Results are truncated to conform with the precision of the Seiko Data/UC 2000.
 
-PLBASIC deviates from [1] in:
+#### PLBASIC lacks with respect to Prolog BASIC 0.1
 
-- Input/Ouput arguments such as `CompIn` and `CompOut` rewritten as `CompIn`-`CompOut` instead of DCG for state passing (DCG led to cumbersome writings with `{}` and troublesomes with accessing the state). However, a better approach would be to use ECDG with a customized accumulator, similar to what is used in the lexer.
-- Functions. PLBASIC benefits from representing a function argument with a logical variable, simplifying the implementation and avoiding placing frames in the heap.
-- Array elements are not reset when declaring the array with `DIM`; instead, each element is reset for the first read access. 
+* A low-level binary arithmetic for floating point operations.
+  Instead, Prolog floating point arithmetic is used. Results are truncated to conform with the precision of the Seiko Data/UC 2000.
 
+#### PLBASIC deviations from Prolog BASIC 0.1
+
+* Input/Ouput arguments such as `CompIn` and `CompOut` rewritten as `CompIn`-`CompOut` instead of DCG for state passing (DCG led to cumbersome writings with `{}` and troublesomes with accessing the state).
+  However, a better approach would be to use ECDG with a customized accumulator, similar to what is used in the lexer.
+* Functions.
+  PLBASIC benefits from representing a function argument with a logical variable, simplifying the implementation and avoiding placing frames in the heap.
+* Array elements are not reset when declaring the array with `DIM`; instead, each element is reset for the first read access.
+* Line numbers are not labeled with the type (always `int`).
+  Since a label is composed of the line and statement numbers, this saves space and makes it more readable.
+
+#### Comments about the current design
+
+* Given that an implementation for the next line has been developed (which was needed to calculate the jump to a non-existing line number) the next line attached to each program statemente could be omitted.
+  However, from a performance point of view, it is better to have it precalculated.
+
+#### TODO list
+
+* Compile the DLL containing a call to Windows kbhit in order to emulate `$INKEY`.
+* Mimic error reporting.
+* Emulate the whole system, not only the execution of BASIC programs.
+* DCG/EDCG combined with tabling might avoid termination problems with left recursive grammars.
+  May this combo augment performance?
+
+
+[//]: # (### 3.2. The Debugger)
+
+[//]: # (* Renumbering tool.)
 
 ## References
 
@@ -572,6 +607,10 @@ PLBASIC deviates from [1] in:
   * https://prologomenon.wordpress.com/2020/11/21/writing-a-basic-interpreter-part-3/
   * https://prologomenon.wordpress.com/2020/12/20/writing-a-basic-interpreter-part-4/
   
+[2] Victor Lagerkvist. Version 0.1 of PROLOG BASIC. Code Location at GistHub https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec
+
+[3] Hattori Seiko Company, Ltd. Seiko UC 2200 BASIC Manual. 1984. https://archive.org/details/basic_202302/mode/2up
+
 
 `TO BE CONTINUED`
 
