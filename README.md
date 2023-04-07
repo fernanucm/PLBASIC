@@ -537,8 +537,8 @@ As already said at the beginning, the interpreter is based on the (great) implem
 The reader is advised to first read his blog before continuing this.
 Its code is located at [Gist](https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec) [2].
 
-Basically, [1] defines a `comp` object as a SWI-Prolog dict data structure holding several named arguments:  program, memory, instruction counter, stack, and status.
-Here, some other arguments have been added, which will be commented along this section.
+Basically, [1] defines a `comp` object as a SWI-Prolog dict data structure holding several named arguments: program (`program`), memory (`mem`), instruction counter (`line`), stack (`stack`), and status (`status`).
+Here, some other arguments have been added (`source`, `screen`, `cursor`, `runline`, and `data`), which will be commented along this section.
 
 #### PLBASIC improvements with respect to Prolog BASIC 0.1
 
@@ -546,7 +546,7 @@ Here, some other arguments have been added, which will be commented along this s
 * Lexer. Implemented with EDCG's with two purposes: hide both the list of codes, and the line and column numbers used for error reporting.
 * Parser. Implemented with DCG's it might be implemented with EDCG's as well. 
 * Error reporting in parsing and running programs. The new named argument `runline` for the `comp` object has been added to report the line for the statement being executed.
-* Resizeable screen. With a default screen 10 column wide and 4 line height, this tiny dimensions can be enlarged to better display results and listings. The screen is implemented as an additional named argument in the dict for the `comp` object. Also, the named argument `cursor` has been added to hold the current line and column where the cursor is located, as a term `lc(Line, Column)`.
+* Resizeable screen. With a default screen 10 column wide and 4 line height, this tiny dimensions can be enlarged to better display results and listings. The screen is implemented as an additional named argument `screen` in the dict for the `comp` object. Also, the named argument `cursor` has been added to hold the current line and column where the cursor is located, as a term `lc(Line, Column)`.
 * Multiple sentences in a line separated by colons. This requires a new line numbering: LineNumber-StatementNumber. In particular, several statements are allowed in `IF` statements.
 * `ELSE` statements. However, this is unsupported in Seiko Data 2000.
 * Evaluation of Boolean and string expressions.
@@ -571,6 +571,7 @@ The `comp` object also includes the named argument `source`, which stores the pr
 * A low-level binary arithmetic for floating point operations.
   Instead, Prolog floating point arithmetic is used. Results are truncated to conform with the precision of the Seiko Data/UC 2000.
 
+
 #### PLBASIC deviations from Prolog BASIC 0.1
 
 * Input/Ouput arguments such as `CompIn` and `CompOut` rewritten as `CompIn`-`CompOut` instead of DCG for state passing (DCG led to cumbersome writings with `{}` and troublesomes with accessing the state).
@@ -581,21 +582,98 @@ The `comp` object also includes the named argument `source`, which stores the pr
 * Line numbers are not labeled with the type (always `int`).
   Since a label is composed of the line and statement numbers, this saves space and makes it more readable.
 
+
 #### Comments about the current design
 
 * Given that an implementation for the next line has been developed (which was needed to calculate the jump to a non-existing line number) the next line attached to each program statemente could be omitted.
   However, from a performance point of view, it is better to have it precalculated.
 
+
+#### States of the interpreter
+
+Upon interpreting a program, several states of the interpreter can be reached.
+A transition between these states are performed by the execution of a single program statement or could be performed by an _external_ action, which refers to a procedure out of the interpreting loop.
+States are the following:
+
+* `run`. Identifies a running program. First, it can be stopped if a `STOP` statement is executed. Second, it can be ended if either the `END` statement or the end of the program has been reached (there are no further statements to execute). And third, it can be erased if the `NEW` statement is reached along execution.
+* `stop`. Identifies a stopped program. A stopped excution could be resumed with the the _extenal_ execution of a `CONT` statement. 
+* `end`. Identifies an ended program. An ended execution can not be resumed, but _externally_ restarted.
+* `new`. Identifies an erased program and variables. This state is immediately followed by the `end` state.
+
+The following state transition diagram summarizes these states and their transitions. Transitions are labelled by either statements or external actions. In this last case, transition arcs are dashed. _`STMT`_ refers to any statement.
+
+<img src="https://github.com/fernanucm/PLBASIC/blob/main/images/STD%20Interpreter.png" alt= "State transition diagram for the PLBASIC interpreter" width="400px">
+
+
 #### TODO list
 
-* Compile the DLL containing a call to Windows kbhit in order to emulate `$INKEY`.
+* Windows: Compile the DLL containing a call to Windows kbhit in order to emulate `$INKEY`.
 * Mimic error reporting.
 * Emulate the whole system, not only the execution of BASIC programs.
 * DCG/EDCG combined with tabling might avoid termination problems with left recursive grammars.
-  May this combo augment performance?
+  Might this combo enhance performance?
 
 
-[//]: # (### 3.2. The Debugger)
+### 3.2. The Debugger
+
+#### Data structures
+
+The debugger is built around the `comp` object and a new `debug` object, also implemented as a dict.
+This dict includes named arguments for the location and size of the different debug panels:
+
+Locations:
+
+* `program_panel_location`
+* `screen_panel_location`
+* `inspect_panel_location`
+* `control_panel_location`
+
+Sizes:
+
+* `program_panel_size`
+* `inspect_panel_size`
+* `screen_panel_size`
+* `control_panel_size`
+
+Locations are represented by a term `lc(Line, Column)` and sizes by `rc(Rows, Columns)`.
+
+Since the program and inspect panels admit scrolling, the display offset is represented in the following named arguments:
+
+* `program_display_offset`
+* `inspect_display_offset`
+
+A 0 offset means no scroll, while a positive/negative scroll means how many rows from the origin row the display is scrolled downwards/upwards. 
+The reference row of the inspect panel is 0, while the reference row of the program panel is the selected (current) line.
+Thus, the inspect panel does not admit a negative offset.
+ 
+There is also another argument holding the panel in focus:
+
+* `in_focus`
+  It may take the values `program`, `inspect`, `screen` or `control`.
+
+Initial values for most of these named arguments can be configured in the file `flags.pl`.
+
+Other named arguments for the debug object (which do not admit configurable initial values) are:
+
+* `program_lines`
+  The program listing is a series of screen rows so that each program line can span one or more screen rows.
+  This named argument maps the start of each program line to the corresponding screen row.
+  The program lines are represented as an AVT tree with:
+  *  Key  : Statement line number (a label represented by the term Line-Statement).
+  *  Value: Number of the row in the listing (base-0).
+* `program_listing`
+  This named argument stores the program listing as a list of screen rows (each row is implemented with an atom).
+* `inspect_vars`
+  Ordered set of inspect variable names (each variable is represented with an atom).
+* `inspect_listing`
+  The inspect listing is the listing of inspect variables together with their values, and it is represented as a list of rows (atoms).
+* `breakpoints`
+  This named argument stores the ordered set of breakpoints as an ordered list of labels (terms of the form Line-Statement).
+
+#### States of the debugger
+
+
+
 
 [//]: # (* Renumbering tool.)
 
