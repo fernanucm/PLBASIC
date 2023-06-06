@@ -746,7 +746,7 @@ States shared with the interpreter:
 [//]: # (* Renumbering tool.)
 
 ## References
- [[1]](#ref1) [1] Victor Lagerkvist. "Writing a BASIC interpreter. Parts 1-4". In "The Blogging of Prolog". 
+ <a name="ref1">[1]</a> Victor Lagerkvist. "Writing a BASIC interpreter. Parts 1-4". In "The Blogging of Prolog". 
   * https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/
   * https://prologomenon.wordpress.com/2020/11/03/writing-a-basic-interpreter-part-2/
   * https://prologomenon.wordpress.com/2020/11/21/writing-a-basic-interpreter-part-3/
