@@ -3,7 +3,7 @@ Interpreter and debugger of BASIC programs implemented in Prolog
 
 
 ## Credits
-The interpreter follows the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/) [[1]](#references).
+The interpreter follows the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/) [[1]](#ref1).
 Any bug and bad design decisions in PLBASIC must be blamed on me. 
 
 Some example programs have been adapted from [8bitworkshop](https://8bitworkshop.com/).
@@ -746,7 +746,7 @@ States shared with the interpreter:
 [//]: # (* Renumbering tool.)
 
 ## References
-[1] Victor Lagerkvist. "Writing a BASIC interpreter. Parts 1-4". In "The Blogging of Prolog". 
+ [[1]](#ref1) [1] Victor Lagerkvist. "Writing a BASIC interpreter. Parts 1-4". In "The Blogging of Prolog". 
   * https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/
   * https://prologomenon.wordpress.com/2020/11/03/writing-a-basic-interpreter-part-2/
   * https://prologomenon.wordpress.com/2020/11/21/writing-a-basic-interpreter-part-3/
