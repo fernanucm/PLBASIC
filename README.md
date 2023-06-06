@@ -16,7 +16,7 @@ Being multiplatform, it can be used directly from sources (folder `./src`) havin
 However, this project has been tested on Windows 10 and some differences may exist with respect to other OS's.
 
 This project was motivated to emulate the Microsoft BASIC implementation in the Seiko UC 2000 watch from the 80's, coupled with the Seiko UC 2200 for writing (and printing) programs.
-The manuals can be found at [[3]](#references).
+The manuals can be found at [[3]](#ref3).
 
 <img src="http://i.imgur.com/iAxehPR.jpg" alt= "SEIKO UC 2000 watch and UC 2200 keyboard and printer" width="300px">
 
@@ -371,7 +371,7 @@ In Windows, SWI-Prolog supports color themes in the `swipl-win.exe` console.
 
 ## Supported Instruction Set
 
-While the online manual [[2]](#references) of Guillaume Tello (2008) was consulted in the first term, a recent scan for the original manual can be found at [[3]](#references). Following this, the next instructions, functions and operators below are supported:
+While the online manual [[2]](#ref2) of Guillaume Tello (2008) was consulted in the first term, a recent scan for the original manual can be found at [[3]](#ref3). Following this, the next instructions, functions and operators below are supported:
 
 ### Instructions
 
@@ -583,11 +583,11 @@ Parentheses can be used as needed to surround expressions.
 
 ### 3.1. The Interpreter
 
-As already said at the beginning, the interpreter is based on the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/) [1].
+As already said at the beginning, the interpreter is based on the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/) [[1]](#ref1).
 The reader is advised to first read his blog before continuing this.
-Its code is located at [Gist](https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec) [[2]](#references).
+Its code is located at [Gist](https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec) [[2]](#ref2)).
 
-Basically, [1] defines a `comp` object as a SWI-Prolog dict data structure holding several named arguments: program (`program`), memory (`mem`), instruction counter (`line`), stack (`stack`), and status (`status`).
+Basically, [[1]](#ref1) defines a `comp` object as a SWI-Prolog dict data structure holding several named arguments: program (`program`), memory (`mem`), instruction counter (`line`), stack (`stack`), and status (`status`).
 Here, some other arguments have been added (`source`, `screen`, `cursor`, `runline`, and `data`), which will be commented along this section.
 
 #### PLBASIC improvements with respect to Prolog BASIC 0.1
@@ -603,8 +603,8 @@ Here, some other arguments have been added (`source`, `screen`, `cursor`, `runli
 * Floats (`float`/3) and fractionals (`frac`/2) are identified, though both are treated as floats.
 * Expressions in `GOTO` statements.
 * Logical operators `AND`, `OR` and `NOT`.
-* `GOTO` and `GOSUB` to a non-existent line number `L`. As in [3], a jump like this ends in the next line to `L`.
-* Augmented supported instruction set (almost complete with respecto to [3]). Including in particular:
+* `GOTO` and `GOSUB` to a non-existent line number `L`. As in [[3]](#ref3), a jump like this ends in the next line to `L`.
+* Augmented supported instruction set (almost complete with respecto to [[3]](#ref3)). Including in particular:
   * `DATA` and `RESTORE`. For this, the new named argument `data` is added to the `comp` object, storing the address of the current data to read (Line-Statement-Element).
   * `LIST`. Program listings are reconstructed from the internal representation of the program. To reconstruct a `REM` statement, the original remark is kept as an argument of this statement.
   * `ON` `expr` `GOTO`/`GOSUB` ...
@@ -746,15 +746,18 @@ States shared with the interpreter:
 [//]: # (* Renumbering tool.)
 
 ## References
- <a name="ref1">[1]</a> Victor Lagerkvist. "Writing a BASIC interpreter. Parts 1-4". In "The Blogging of Prolog". 
+<a name="ref1">[1]</a>
+Victor Lagerkvist. "Writing a BASIC interpreter. Parts 1-4". In "The Blogging of Prolog". 
   * https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/
   * https://prologomenon.wordpress.com/2020/11/03/writing-a-basic-interpreter-part-2/
   * https://prologomenon.wordpress.com/2020/11/21/writing-a-basic-interpreter-part-3/
   * https://prologomenon.wordpress.com/2020/12/20/writing-a-basic-interpreter-part-4/
   
-[2] Victor Lagerkvist. Version 0.1 of PROLOG BASIC. Code Location at GistHub https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec
+<a name="ref2">[2]</a>
+Victor Lagerkvist. Version 0.1 of PROLOG BASIC. Code Location at GistHub https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec
 
-[3] Hattori Seiko Company, Ltd. Seiko UC 2200 BASIC Manual. 1984. https://archive.org/details/basic_202302/mode/2up
+<a name="ref3">[3]</a>
+Hattori Seiko Company, Ltd. Seiko UC 2200 BASIC Manual. 1984. https://archive.org/details/basic_202302/mode/2up
 
 
 `TO BE CONTINUED`
