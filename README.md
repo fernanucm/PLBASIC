@@ -3,7 +3,7 @@ Interpreter and debugger of BASIC programs implemented in Prolog
 
 
 ## Credits
-The interpreter follows the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/) [1].
+The interpreter follows the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/) [[1]](#references).
 Any bug and bad design decisions in PLBASIC must be blamed on me. 
 
 Some example programs have been adapted from [8bitworkshop](https://8bitworkshop.com/).
@@ -12,12 +12,11 @@ Some example programs have been adapted from [8bitworkshop](https://8bitworkshop
 ## 1. Introduction
 
 This repository includes a text-based interface for both an interpreter and debugger of BASIC programs, implemented in SWI-Prolog.
-Being multiplatform, it can be used directly from sources (folder `./src`) having installed SWI-Prolog 9.0 or above. 
-In addition, an installer is provided for Windows, should you do not want to install SWI-Prolog.
-The installer (`setup.exe`) has been tested in Windows 10 64 bit (folder `./W10Installer`).
+Being multiplatform, it can be used directly from sources (folder `./src`) having installed SWI-Prolog 8.x or above. 
+However, this project has been tested on Windows 10 and some differences may exist with respect to other OS's.
 
 This project was motivated to emulate the Microsoft BASIC implementation in the Seiko UC 2000 watch from the 80's, coupled with the Seiko UC 2200 for writing (and printing) programs.
-The manuals can be found at [3].
+The manuals can be found at [[3]](#references).
 
 <img src="http://i.imgur.com/iAxehPR.jpg" alt= "SEIKO UC 2000 watch and UC 2200 keyboard and printer" width="300px">
 
@@ -29,7 +28,47 @@ The intention of the project is to be neither complete nor accurate, but a raw a
 Some features are not present while others are added.
 
 
-### 1.1. Caveats
+### 1.1 Requirements
+
+PLBASIC requires SWI-Prolog 8.x or higher already installed. In addition, the pack EDCG must be installed in SWI-Prolog. For example:
+
+```prolog
+C:\> swipl
+Welcome to SWI-Prolog (threaded, 64 bits, version 9.0.4)
+SWI-Prolog comes with ABSOLUTELY NO WARRANTY. This is free software.
+Please run ?- license. for legal details.
+
+For online help and background, visit https://www.swi-prolog.org
+For built-in help, use ?- help(Topic). or ?- apropos(Word).
+
+?- pack_install(edcg).
+% Contacting server at http://www.swi-prolog.org/pack/query ...
+Install edcg@0.9.1.8 from https://github.com/kamahen/edcg/archive/v0.9.1.8.zip Y/n? 
+
+Create directory for packages
+   (1) * /home/my_user/.local/share/swi-prolog/pack
+   (2)   Cancel
+
+Your choice? 1
+
+% Contacting server at https://www.swi-prolog.org/pack/query ... ok
+% "v0.9.1.8.zip" was downloaded 42 times
+Package:                edcg
+Title:                  Extended DCG
+Installed version:      0.9.1.8
+Author:                 Peter Van Roy <peter.vanroy@uclouvain.be>
+Maintainer:             Peter Ludemann <peter.ludemann@gmail.com>
+Packager:               Michael Hendricks <michael@ndrix.org>
+Home page:              https://github.com/kamahen/edcg
+Download URL:           https://github.com/kamahen/edcg/archive/*.zip
+Install "edcg-0.9.1.8.zip" (731,591 bytes) Y/n? Y
+true.
+
+?- 
+```
+
+
+### 1.2. Caveats
 
 * More contents will be uploaded as time permits.
 * `TODO` indicates tasks to be done (in the expected near future).
@@ -44,6 +83,12 @@ For example, open a `cmd` terminal in Windows and type:
 
 ```bat
 C:\PLBASIC> swipl-win.exe -g "set_prolog_flag(double_quotes, codes)"
+```
+
+From Linux (yet to be tested):
+
+```bat
+$ swipl -g "set_prolog_flag(double_quotes, codes)"
 ```
 
 Then, write the following at the SWI-Prolog prompt:
@@ -96,7 +141,7 @@ From the SWI-Prolog program prompt, write the following to consult and start the
 
 ```prolog
 ?- [debug].
-?- debug('./bas/reverse.bas').
+?- debug('./bas/ball.bas').
 ```
 
 This leads to the debugger user interface, which consists of several panels:
@@ -106,6 +151,9 @@ This leads to the debugger user interface, which consists of several panels:
 * `CONTROL`. Available commands, executed by pressing the letter between brackets or the special keys.
 * `INSPECT`. List of variables found along executing the program, displaying their values.
 * `FILES`. A basic file explorer to open BASIC programs.
+
+An example of the debuggger display is:
+
 
 ```
 +-------------- PROGRAM ./bas/ball.bas ---------------+
@@ -166,8 +214,8 @@ These commands are the following:
 
 ##### Implementation note: 
 
-Since the `PageUp` and `PageDown` keys do not return an ASCII code that can be read with `get_single_char/1`, other keys have been selected as shortcuts (`u` and `d`, respectively).
-As well, the `STOP` command requires reading the keyboard without waiting for a key press, which can be better implemented with a new foreign predicate written in C/C++ (expected to be completed in the near future).
+Since the `PageUp` and `PageDown` keys do not return an ASCII code that can be read with `get_single_char/1` (in Windows), other keys have been selected as shortcuts (`u` and `d`, respectively).
+As well, the `STOP` command requires reading the keyboard without waiting for a key press, which can be better implemented with a new foreign predicate written in C/C++ (expected to be completed in the near future). However, this is not required for Linux because there exists a non-blocking read of key presses.
 
 #### Commands of the `FILES` panel
 
@@ -224,7 +272,7 @@ A breakpoint can be set at the second statement (`02`) of the first line (`00010
 
 To set that breakpoint, first the down arrow has been pressed before setting on the breakpoint with the key `b` (then, the arrow up has been pressed to list all the program).
 Note that both variables and instructions are case-insensitive.
-The system can be configured to list programs in downcase letters (see next section Configuration).
+The system can be configured to list programs in either upcase or downcase letters (see next section Configuration).
 
 
 #### Configuration
@@ -280,6 +328,8 @@ let(off). % Change to on if you prefer LET to appear in listings
 
 ##### Colors
 
+In Windows, SWI-Prolog supports color themes in the `swipl-win.exe` console.
+
 * Interface colors: Themes
 
   SWI-Prolog allows to load color themes as defined in Prolog files.
@@ -321,7 +371,7 @@ let(off). % Change to on if you prefer LET to appear in listings
 
 ## Supported Instruction Set
 
-Following the (acknowledeged incomplete) [online manual](https://gtello.pagesperso-orange.fr/seikomanual.pdf) of Guillaume Tello (2008) for this watch, the next instructions, functions and operators below are supported:
+While the online manual [[2]](#references) of Guillaume Tello (2008) was consulted in the first term, a recent scan for the original manual can be found at [[3]](#references). Following this, the next instructions, functions and operators below are supported:
 
 ### Instructions
 
@@ -535,7 +585,7 @@ Parentheses can be used as needed to surround expressions.
 
 As already said at the beginning, the interpreter is based on the (great) implementation and some guidelines of [`victorlagerkvist`](https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/) [1].
 The reader is advised to first read his blog before continuing this.
-Its code is located at [Gist](https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec) [2].
+Its code is located at [Gist](https://gist.github.com/Joelbyte/a62ad46e2941dc1006cc153b2b63c1ec) [[2]](#references).
 
 Basically, [1] defines a `comp` object as a SWI-Prolog dict data structure holding several named arguments: program (`program`), memory (`mem`), instruction counter (`line`), stack (`stack`), and status (`status`).
 Here, some other arguments have been added (`source`, `screen`, `cursor`, `runline`, and `data`), which will be commented along this section.
@@ -597,10 +647,10 @@ States are the following:
 
 * `run`. Identifies a running program. First, it can be stopped if a `STOP` statement is executed. Second, it can be ended if either the `END` statement or the end of the program has been reached (there are no further statements to execute). And third, it can be erased if the `NEW` statement is reached along execution.
 * `stop`. Identifies a stopped program. A stopped excution could be resumed with the the _extenal_ execution of a `CONT` statement. 
-* `end`. Identifies an ended program. An ended execution can not be resumed, but _externally_ restarted.
+* `end`. Identifies an ended program. This corresponds to finishing the interpreting loop. An ended execution can not be resumed, but _externally_ restarted.
 * `new`. Identifies an erased program and variables. This state is immediately followed by the `end` state.
 
-The following state transition diagram summarizes these states and their transitions. Transitions are labelled by either statements or external actions. In this last case, transition arcs are dashed. _`STMT`_ refers to any statement.
+The following state transition diagram summarizes these states and their transitions. Transitions are labelled by either statements or external actions. In this last case, transition arcs are dashed. _`STMT`_ refers to any statement. `CONT` in the dashed arc is a statement which would be issued at the (watch) system prompt. `restart` corresponds to restarting the interpreting loop. The empty set symbol denotes that there is no remaining statements to run.
 
 <img src="https://github.com/fernanucm/PLBASIC/blob/main/images/STD%20Interpreter.png" alt= "State transition diagram for the PLBASIC interpreter" width="400px">
 
@@ -672,13 +722,30 @@ Other named arguments for the debug object (which do not admit configurable init
 
 #### States of the debugger
 
+Similar to the interpreter, debugging a program includes a loop that traverses several states.
+A transition between these states are performed by the execution of a single program statement or by a debugger command.
+States shared with the interpreter:
+
+* `run`. This state can also be changed to `stop` when encountering a breakpoint in the current running line.
+* `stop`. The commmand `(C)ONT` changes this state to `run`. 
+* `end`. Identifies an ended program. An ended execution can not be resumed, but _externally_ restarted.
+* `new`. Identifies an erased program and variables. This state is immediately followed by the `end` state.
+
+`TO BE COMPLETED`
+
+[//]: # (* Other states:)
+
+[//]: # (* The following state transition diagram summarizes these states and their transitions. Transitions are labelled by either statements or external actions. In this last case, transition arcs are dashed. _`STMT`_ refers to any statement.)
+
+[//]: # (* <img src="https://github.com/fernanucm/PLBASIC/blob/main/images/STD%20Interpreter.png" alt= "State transition diagram for the PLBASIC interpreter" width="400px">)
+
+
 
 
 
 [//]: # (* Renumbering tool.)
 
 ## References
-
 [1] Victor Lagerkvist. "Writing a BASIC interpreter. Parts 1-4". In "The Blogging of Prolog". 
   * https://prologomenon.wordpress.com/2020/10/25/writing-a-basic-interpreter-part-1/
   * https://prologomenon.wordpress.com/2020/11/03/writing-a-basic-interpreter-part-2/
