@@ -76,10 +76,11 @@ true.
 
 ## 2. A First Glance
 
-### 2.1. The BASIC Interpreter started from SWI-Prolog
+### 2.1. Starting the BASIC Interpreter from SWI-Prolog
 
 Start SWI-Prolog from the `./src` folder with either `pl` in Linuxes or `swipl-win.exe` in Windows, setting the behavior of double_quotes to codes.
-For example, open a `cmd` terminal in Windows and type:
+(Though the `swipl.exe` executable is also available, required ANSI codes are not fully supported and thus it cannot be used to run PLBASIC.) 
+For example, open a `cmd` terminal in Windows and change the directory to the folder where PLBASIC is located (e.g., with `cd c:\plbasic`) and type:
 
 ```bat
 C:\PLBASIC> swipl-win.exe -g "set_prolog_flag(double_quotes, codes)"
@@ -91,7 +92,7 @@ From Linux (yet to be tested):
 $ swipl -g "set_prolog_flag(double_quotes, codes)"
 ```
 
-Then, write the following at the SWI-Prolog prompt:
+Then, assuming that you started SWI-Prolog from the folder where PLBASIC is located, write the following at the SWI-Prolog prompt:
 
 ```prolog
 ?- [basic].
@@ -110,7 +111,7 @@ This results in:
 +lc(1,0)---+
 ```
 
-Here, SCREEN is the panel surrounding the watch screen. Below, the numbers show the current line an column (both 0-based) of the cursor.
+Here, `SCREEN` is the panel surrounding the watch screen. Below, the numbers in the term `lc(1,0)` show the current line an column (both 0-based) of the cursor. In this case, the cursor is finally placed at the second line (number 1) and first column (number 0) because the `print` command moves the cursor to the next line.
 
 Instead of passing the program as shown, a file can be selected otherwise, such as in:
 
@@ -133,7 +134,7 @@ Instead of passing the program as shown, a file can be selected otherwise, such 
 i.e., the result of computing the factorial of 5.
 
 
-### 2.2. The BASIC Debugger started from SWI-Prolog
+### 2.2. Starting the BASIC Debugger from SWI-Prolog
 
 While the interpreter is a simple way to executing BASIC programs, the debugger (not present in the original Seiko watch) includes expected features of a simple debugger: step-by-step, breakpoints, inspects and the like.
 
@@ -153,6 +154,8 @@ This leads to the debugger user interface, which consists of several panels:
 * `FILES`. A basic file explorer to open BASIC programs.
 
 An example of the debuggger display is:
+
+<img src="https://github.com/fernanucm/PLBASIC/blob/main/images/Debugger.jpg" alt= "The PLBASIC Debugger" width="600px">
 
 
 ```
@@ -182,7 +185,7 @@ An example of the debuggger display is:
 +---------------------------+ +----------------------------------------+ 
 ```
 
-The arrangement of panels may differ from this example, which corresponds to the execution (command `RUN` executed by pressing `r`) of the example program `ball.bas` (bouncing ball). They can be moved and resized at will with the the arrow keys when the command `MOVE` or `RESIZE` have been enabled by pressing the keys `m` and `z` respectively.
+This snapshot corresponds to executing (with the command `RUN`, by pressing `r`) the example program `ball.bas` (bouncing ball). The arrangement of these panels can be changed by moving and resizing them at will. When the command `MOVE` or `RESIZE` has been enabled by pressing the keys `m` and `z` respectively, arrow keys can be used to move and resize the selected panel. To select another panel, you press `TAB` and the panel heading is shown highlighted.
 
 #### Debugger Commands
 
@@ -236,7 +239,7 @@ This panel is opened with the debugger command `OPEN`, leading to something like
 
 The first row in the panel is the current folder.
 The highlighted row is the selected row for either opening the file or navigating into the folder.
-Folders are enclosed between angle brackets, and `<..>` means to go up in the folder tree. 
+Folders are enclosed between angle brackets, and pressing `Intro` when `<..>` is selected means to go up in the folder tree. 
 
 The following commands are available for this panel:
 
