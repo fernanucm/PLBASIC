@@ -157,7 +157,7 @@ An example of the debuggger display is:
 
 <img src="https://github.com/fernanucm/PLBASIC/blob/main/images/Debugger.jpg" alt= "The PLBASIC Debugger" width="600px">
 
-
+<!---
 ```
 +-------------- PROGRAM ./bas/ball.bas ---------------+
 |00001:01 CLS                                         |
@@ -184,19 +184,20 @@ An example of the debuggger display is:
 |Status : Program ended     | |                                        |  
 +---------------------------+ +----------------------------------------+ 
 ```
+--->
 
-This snapshot corresponds to executing (with the command `RUN`, by pressing `r`) the example program `ball.bas` (bouncing ball). The arrangement of these panels can be changed by moving and resizing them at will. When the command `MOVE` or `RESIZE` has been enabled by pressing the keys `m` and `z` respectively, arrow keys can be used to move and resize the selected panel. To select another panel, you press `TAB` and the panel heading is shown highlighted.
+This snapshot corresponds to executing the example program `ball.bas` (bouncing ball) with the command `RUN`, by pressing the key `r` . The arrangement of these panels can be changed by moving and resizing them at will. When the command `MOVE` or `RESIZE` has been enabled by pressing the keys `m` and `z` respectively, arrow keys can be used to move and resize the selected panel. To select another panel, you press `TAB` and the panel heading is shown highlighted.
 
 #### Debugger Commands
 
 The `CONTROL` panel lists the available commands and their keyboard shorcuts between parentheses. 
 These commands are the following:
 
-* `RUN`:       Execute the program up to its end or first breakpoint
+* `RUN`:       Execute the program up to its end, `stop` instruction or first breakpoint
 * `STEP`:      Execute the current statement (which is shown highlighted)
 * `% STOP`:    Stop the execution (`TODO`. Requires external DLL to be built)
 * `CONT`:      Continue the execution
-* `SETBK`:     Set breakpoint in the current (highlighted) line
+* `SETBK`:     Set breakpoint at the top line in the PROGRAM panel
 * `RESET`:     Reset the debugging session (reload the program)
 * `RENUM`:     Renum the program and reset
 * `OPEN`:      Open a file from a selectable folder
@@ -224,6 +225,9 @@ As well, the `STOP` command requires reading the keyboard without waiting for a 
 
 This panel is opened with the debugger command `OPEN`, leading to something like this:
 
+<img src="https://github.com/fernanucm/PLBASIC/blob/main/images/Files.jpg" alt= "The PLBASIC Debugger" width="120px">
+
+<!---
 ```
 +--- FILES ---+
 |./bas        |
@@ -236,8 +240,9 @@ This panel is opened with the debugger command `OPEN`, leading to something like
 |             |
 +-------------+
 ```
+--->
 
-The first row in the panel is the current folder.
+The first row in the panel below the title bar is the current folder.
 The highlighted row is the selected row for either opening the file or navigating into the folder.
 Folders are enclosed between angle brackets, and pressing `Intro` when `<..>` is selected means to go up in the folder tree. 
 
@@ -251,9 +256,9 @@ The following commands are available for this panel:
 
 #### Breakpoints
 
-You can toggle a breakpoint in the first row of the panel `PROGRAM` by hitting the `b` key.
+You can toggle a breakpoint in the first row of the `PROGRAM` panel by hitting the `b` key.
 The breakpoint is displayed as an asterisk (`*`) between the statement number and the BASIC instruction.
-As long as a line can contain multiple statements, each one is split in different rows in the program listing, with the format *line number*`:`*statement number*.
+As long as a line can contain multiple statements, each one is split in different rows in the program listing, with the format `line number:statement number`.
 Thus, a breakpoint can be set in any statement of a given line, and many breakpoints can be set in a single program.
 
 For example, given the next call:
@@ -314,18 +319,18 @@ control_panel_size(rc(10, 27)).
 
 * Uppercase/Downcase.
 ```prolog
-uppercase(on). % Default is uppercase (change to off otherwise)
+uppercase(on). % Default is uppercase ('on'). Change to lowercase with 'off'
 ```
 
 * Extra blanks to improve reading.
 
 ```prolog
-optional_spaces(on). % Change to off to remove optional spaces
+optional_spaces(on). % Change to 'off' to remove optional spaces
 ```
 
 * `LET` instruction.
 ```prolog
-let(off). % Change to on if you prefer LET to appear in listings
+let(off). % Change to 'on' if you prefer LET to appear in listings
 ```
 
 
@@ -340,8 +345,9 @@ In Windows, SWI-Prolog supports color themes in the `swipl-win.exe` console.
   For example, to select white letters over a blue background (as some old 8 bit computers enjoyed):
 
   ```prolog
-  ?- [library('./themes/blue_while.pl')].
+  ?- use_module('themes/blue_white.pl').
   ```
+This is what `basic.pl` contains as a directive, so that upon consulting it, this theme is applied by default.
 
   You can change or add new themes at will in these themes.
 
@@ -358,7 +364,7 @@ In Windows, SWI-Prolog supports color themes in the `swipl-win.exe` console.
     text_color(focused, fb(bright_blue, white)).
     ```
 
-    * Panel headings (such as the path in the `FILE` panel)
+    * Panel headings (such as the current path in the `FILE` panel)
    
     ```prolog
     text_color(heading, fb(bright_white, bright_black)).
@@ -382,7 +388,7 @@ While the online manual [[2]](#ref2) of Guillaume Tello (2008) was consulted in 
   Runs the program (starting at line `li` is provided).
   
 * `LIST [li]`
-  Display the listing of the program using the line number order. With `li` specified, starts from this line til the end.
+  Displays the listing of the program using the line number order. With `li` specified, starts from this line til the end.
 
 * `NEW`
   Erases the whole program and variables from memory.
@@ -397,10 +403,10 @@ While the online manual [[2]](#ref2) of Guillaume Tello (2008) was consulted in 
   Declares `var` as an array, it seems that `max`=5.
   
 * `[LET] var=expression`
-  Computes the expression and stores it into var. `LET` is optional.
+  Computes the expression and stores it into `var`. `LET` is optional.
   
 * `DEF FNvar(x)=..expression of x..`
-  Declares FNvar as a function, then to use it, as a numeric value, just write `FNvar(x)`.
+  Declares `FNvar` as a function, then to use it, as a numeric value, just write `FNvar(x)`.
 
 * `CLS`
   Clears the screen and the cursor goes to the upper left.
@@ -415,7 +421,7 @@ While the online manual [[2]](#ref2) of Guillaume Tello (2008) was consulted in 
 	`instructions`
   `NEXT var`
   Initialises `var` to `x` and repeats the instruction block until `var>x’`.
-	If no `STEP` is specified then, `STEP=1` to increment var at each loop.
+	If no `STEP` is specified, then `STEP=1` is assumed to increment `var` at each iteration.
 	If `x’’<0`, then loop until `var<x’`.
 
 * `GOTO li`
@@ -426,7 +432,7 @@ While the online manual [[2]](#ref2) of Guillaume Tello (2008) was consulted in 
 	if `n<1` or `n>max` then no jump is performed and go to the next instruction.
 
 * `IF condition THEN [instructions|li]`
-  If a condition is true (different from zero) then the following instructions are executed, or jump to the specified line number `li`. If the condition is false (equal to zero) then executions goes on to the next line.
+  If a condition is true (different from zero) then the following instructions are executed, or jump to the specified line number `li`. If the condition is false (equal to zero) then execution goes on to the next line.
 
 * `PRINT [ str or x[, or ; [etc…]] ]`
   If separated by `;` they are displayed next to the previous `;` if separated by `,` an 8-width tabulator is applied between values. Each numeric value is preceded by a space if positive or by a `-` if negative.
@@ -438,10 +444,10 @@ While the online manual [[2]](#ref2) of Guillaume Tello (2008) was consulted in 
   Inserts a list of immediate values (reals or strings, but not expressions) in the program. 
 
 * `READ var1 [,var2,…]`
-  Allows you to parse them (as an `INPUT` but without a human intervention).
+  Reads values in `DATA` statements into each variable (as an `INPUT` but without a human intervention).
 
 * `RESTORE [li]`
-  Tells from which DATA line the next `READ` should pick its values.
+  Tells from which `DATA` line the next `READ` should pick its values.
   
 * `STOP`
   Stops the execution.
@@ -456,9 +462,10 @@ While the online manual [[2]](#ref2) of Guillaume Tello (2008) was consulted in 
 
 * `FRE(x)`
 	Returns the number of free bytes, 2922 at start. The argument `x` is ignored.
+        This function, though present, is not emulated, always returning that number.
 
 * `RND(x)`
-	Returns a pseudo-random number from in [0;1[.
+	Returns a pseudo-random number in the range [0;1[.
 	* If `x>0`, returns the next random number.
 	* If `x=0`, returns the last random number.
 	* If `x<0`, initilalizes a new serie of random numbers according to `x`.
@@ -494,7 +501,7 @@ Returns the tangent of the `x` argument. The angle is in radians.
 	Returns the exponential of `x` (base is e=2.71828…).
 
 * `LOG(x)`
-	Returns the logarithm of `x` (base is e=2.71828…).
+	Returns the natural logarithm of `x` (base is e=2.71828…).
 
 * `INKEY$` `TODO` (Requires the external predicate to be built)
 	Returns the current key pressed, else a null string.
@@ -561,7 +568,7 @@ Parentheses can be used as needed to surround expressions.
 
 * Interactive commands at the screen.
 
-* In the original system, the `;` separator could be omitted between an immediate string and a value. For example: `PRINT "X=";X;"Km" can be compacted as `PRINT “X=”X”Km”`. In this implementation, this is not allowed.
+* In the original system, the `;` separator could be omitted between an immediate string and a value. For example: `PRINT "X=";X;"Km"` can be compacted as `PRINT “X=”X”Km”`. In this implementation, this is not allowed.
 
 * `EDIT [li]`
   Edition of line `li`.
@@ -596,11 +603,11 @@ Here, some other arguments have been added (`source`, `screen`, `cursor`, `runli
 #### PLBASIC improvements with respect to Prolog BASIC 0.1
 
 * Module system.
-* Lexer. Implemented with EDCG's with two purposes: hide both the list of codes, and the line and column numbers used for error reporting.
-* Parser. Implemented with DCG's it might be implemented with EDCG's as well. 
+* Lexer. Implemented with EDCG with two purposes: hide both the list of codes, and the line and column numbers used for error reporting.
+* Parser. Implemented with DCG (there is no need for hiding more accumulators). 
 * Error reporting in parsing and running programs. The new named argument `runline` for the `comp` object has been added to report the line for the statement being executed.
 * Resizeable screen. With a default screen 10 column wide and 4 line height, this tiny dimensions can be enlarged to better display results and listings. The screen is implemented as an additional named argument `screen` in the dict for the `comp` object. Also, the named argument `cursor` has been added to hold the current line and column where the cursor is located, as a term `lc(Line, Column)`.
-* Multiple sentences in a line separated by colons. This requires a new line numbering: LineNumber-StatementNumber. In particular, several statements are allowed in `IF` statements.
+* Multiple sentences in a line separated by colons. This requires a new line numbering: `LineNumber-StatementNumber`. In particular, several statements are allowed in `IF` statements.
 * `ELSE` statements. However, this is unsupported in Seiko Data 2000.
 * Evaluation of Boolean and string expressions.
 * Floats (`float`/3) and fractionals (`frac`/2) are identified, though both are treated as floats.
@@ -608,7 +615,7 @@ Here, some other arguments have been added (`source`, `screen`, `cursor`, `runli
 * Logical operators `AND`, `OR` and `NOT`.
 * `GOTO` and `GOSUB` to a non-existent line number `L`. As in [[3]](#ref3), a jump like this ends in the next line to `L`.
 * Augmented supported instruction set (almost complete with respecto to [[3]](#ref3)). Including in particular:
-  * `DATA` and `RESTORE`. For this, the new named argument `data` is added to the `comp` object, storing the address of the current data to read (Line-Statement-Element).
+  * `DATA` and `RESTORE`. For this, the new named argument `data` is added to the `comp` object, storing the address of the current data to read (`Line-Statement-Element`).
   * `LIST`. Program listings are reconstructed from the internal representation of the program. To reconstruct a `REM` statement, the original remark is kept as an argument of this statement.
   * `ON` `expr` `GOTO`/`GOSUB` ...
 * Test suite. Having the file `basic.pl` consulted, the goal `basic:test` starts testing.
@@ -645,22 +652,22 @@ The `comp` object also includes the named argument `source`, which stores the pr
 #### States of the interpreter
 
 Upon interpreting a program, several states of the interpreter can be reached.
-A transition between these states are performed by the execution of a single program statement or could be performed by an _external_ action, which refers to a procedure out of the interpreting loop.
+A transition between these states are performed by the execution of a single program statement or could be performed by an _external_ action, which refers to a procedure out of the interpreting loop such as a key press.
 States are the following:
 
 * `run`. Identifies a running program. First, it can be stopped if a `STOP` statement is executed. Second, it can be ended if either the `END` statement or the end of the program has been reached (there are no further statements to execute). And third, it can be erased if the `NEW` statement is reached along execution.
-* `stop`. Identifies a stopped program. A stopped excution could be resumed with the the _extenal_ execution of a `CONT` statement. 
-* `end`. Identifies an ended program. This corresponds to finishing the interpreting loop. An ended execution can not be resumed, but _externally_ restarted.
+* `stop`. Identifies a stopped program. A stopped excution could be resumed with the the _extenal_ execution of a `CONT` statement. Execution of such statements is not supported yet.
+* `end`. Identifies an ended program. This corresponds to finishing the interpreting loop. An ended execution can not be resumed, but _externally_ restarted; for example, pressing the key `r` (for the `RUN` command).
 * `new`. Identifies an erased program and variables. This state is immediately followed by the `end` state.
 
-The following state transition diagram summarizes these states and their transitions. Transitions are labelled by either statements or external actions. In this last case, transition arcs are dashed. _`STMT`_ refers to any statement. `CONT` in the dashed arc is a statement which would be issued at the (watch) system prompt. `restart` corresponds to restarting the interpreting loop. The empty set symbol denotes that there is no remaining statements to run.
+The following state transition diagram summarizes these states and their transitions. Transitions are labelled by either statements or external actions. In this last case, transition arcs are dashed. _`STMT`_ refers to any statement. `CONT` in the dashed arc is a statement which would be issued at the (watch) system prompt. `restart` corresponds to restarting the interpreting loop. The empty set symbol denotes that there is no remaining statement to run.
 
 <img src="https://github.com/fernanucm/PLBASIC/blob/main/images/STD%20Interpreter.png" alt= "State transition diagram for the PLBASIC interpreter" width="400px">
 
 
 #### TODO list
 
-* Windows: Compile the DLL containing a call to Windows kbhit in order to emulate `$INKEY`.
+* Windows: Compile the DLL containing a call to Windows `kbhit` in order to emulate `$INKEY`.
 * Mimic error reporting.
 * Emulate the whole system, not only the execution of BASIC programs.
 * DCG/EDCG combined with tabling might avoid termination problems with left recursive grammars.
