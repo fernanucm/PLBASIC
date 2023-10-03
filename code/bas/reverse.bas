@@ -1,0 +1,4 @@
+10 A$ = "0123456789"
+20 FOR I = LEN(A$) - 1 TO 0 STEP -1
+30 PRINT MID$(A$, I, 1);
+40 NEXT I
