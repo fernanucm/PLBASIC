@@ -656,7 +656,7 @@ A transition between these states are performed by the execution of a single pro
 States are the following:
 
 * `run`. Identifies a running program. First, it can be stopped if a `STOP` statement is executed. Second, it can be ended if either the `END` statement or the end of the program has been reached (there are no further statements to execute). And third, it can be erased if the `NEW` statement is reached along execution.
-* `stop`. Identifies a stopped program. A stopped excution could be resumed with the the _extenal_ execution of a `CONT` statement. Execution of such statements is not supported yet.
+* `stop`. Identifies a stopped program. A stopped execution could be resumed with the the _extenal_ execution of a `CONT` statement. Execution of such statements is not supported yet.
 * `end`. Identifies an ended program. This corresponds to finishing the interpreting loop. An ended execution can not be resumed, but _externally_ restarted; for example, pressing the key `r` (for the `RUN` command).
 * `new`. Identifies an erased program and variables. This state is immediately followed by the `end` state.
 
@@ -736,21 +736,26 @@ Similar to the interpreter, debugging a program includes a loop that traverses s
 A transition between these states are performed by the execution of a single program statement or by a debugger command.
 States shared with the interpreter:
 
-* `run`. This state can also be changed to `stop` when encountering a breakpoint in the current running line.
+* `run`. This state can also be changed to `stop` when encountering a breakpoint (`bk`) in the current running line.
 * `stop`. The commmand `(C)ONT` changes this state to `run`. 
 * `end`. Identifies an ended program. An ended execution can not be resumed, but _externally_ restarted.
 * `new`. Identifies an erased program and variables. This state is immediately followed by the `end` state.
 
-`TO BE COMPLETED`
+[//]: # (*`TO BE COMPLETED`)
 
-[//]: # (* Other states:)
+Other states:
 
-[//]: # (* The following state transition diagram summarizes these states and their transitions. Transitions are labelled by either statements or external actions. In this last case, transition arcs are dashed. _`STMT`_ refers to any statement.)
+* `init`. This is the initialization state, which is reached after a command `R(E)SET`. Its next state is `stop`, which is unconditionally reached from `init`. 
+* `quit`. This state corresponds to quit the system, which is reached after the commmand `(Q)UIT`. 
+* `cont`. This state is reached after a command `(C)ONT` or an _external_ continuation command `CONT`. Its next state is `run`, which is unconditionally reached from `cont`. 
+* `step`. Identifies an erased program and variables. This state is immediately followed by the `end` state.
+  
+The following state transition diagram summarizes these states and their transitions. 
+Transitions are labelled by either the execution of a statement, or issuing a command or produced by external actions. 
+In this last case, transition arcs are dashed. 
+_`STMT`_ refers to any statement, and `bk` that a breakpoint has been found for the execution of the current statement.
 
-[//]: # (* <img src="https://github.com/fernanucm/PLBASIC/blob/main/images/STD%20Interpreter.png" alt= "State transition diagram for the PLBASIC interpreter" width="400px">)
-
-
-
+<img src="https://github.com/fernanucm/PLBASIC/blob/main/images/STD%20Debugger.png" alt= "State transition diagram for the PLBASIC debugger" width="600px">
 
 
 [//]: # (* Renumbering tool.)
