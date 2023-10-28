@@ -96,24 +96,17 @@ Then, assuming that you started SWI-Prolog from the folder where PLBASIC is loca
 
 ```prolog
 ?- [basic].
-?- run("10 print ""Hello!""").
+?- run("10 print \"Hello!\"").
 ```
 
 This results in:
 
-<img src="https://github.com/fernanucm/PLBASIC/blob/main/images/screen.jpg" alt= "The interpreter screen" width="200px">
+<img src="https://github.com/fernanucm/PLBASIC/blob/main/images/Screen.jpg" alt= "The interpreter screen" width="110px">
 
-```
-+- SCREEN -+
-|Hello!    |
-|          |
-|          |
-|          |
-|          |
-+lc(1,0)---+
-```
-
-Here, `SCREEN` is the panel surrounding the watch screen. Below, the numbers in the term `lc(1,0)` show the current line an column (both 0-based) of the cursor. In this case, the cursor is finally placed at the second line (number 1) and first column (number 0) because the `print` command moves the cursor to the next line.
+Here, `SCREEN` is the panel surrounding the watch screen. 
+Below, the numbers in the term `lc(1,0)` show the current line an column (both 0-based) of the cursor. 
+In this case, the cursor is finally placed at the second line (number 1) and first column (number 0) because the `print` command moves the cursor to the next line.
+Note that double quotes are escaped for the BASIC string `Hello` because they occur inside a Prolog string which uses the same delimiter.
 
 Instead of passing the program as shown, a file can be selected otherwise, such as in:
 
@@ -121,19 +114,14 @@ Instead of passing the program as shown, a file can be selected otherwise, such 
 ?- run('./bas/factorial.bas').
 ```
 
-(notice the single quotes `'` delimiting the file path as opposed to double quotes `"`) which displays:
+In this case, single quotes `'` are used to delimit the file path, as opposed to double quotes `"` which were used before to directly submit a BASIC program.
+The result of this goal displays:
 
-```
-+- SCREEN -+
-| 120      |
-|          |
-|          |
-|          |
-|          |
-+lc(1,0)---+
-```
+<img src="https://github.com/fernanucm/PLBASIC/blob/main/images/Factorial.jpg" alt= "The result of the factorial program in the interpreter" width="110px">
 
 i.e., the result of computing the factorial of 5.
+
+Note that if a BASIC program file is run in this way, there is no need to escape double quotes.
 
 
 ### 2.2. Starting the BASIC Debugger from SWI-Prolog
