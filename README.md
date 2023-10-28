@@ -106,7 +106,7 @@ This results in:
 Here, `SCREEN` is the panel surrounding the watch screen. 
 Below, the numbers in the term `lc(1,0)` show the current line an column (both 0-based) of the cursor. 
 In this case, the cursor is finally placed at the second line (number 1) and first column (number 0) because the `print` command moves the cursor to the next line.
-Note that double quotes are escaped for the BASIC string `Hello` because they occur inside a Prolog string which uses the same delimiter.
+Note that double quotes are escaped (`\"`) for the BASIC string `"Hello"` because they occur inside a Prolog string which uses the same delimiter.
 
 Instead of passing the program as shown, a file can be selected otherwise, such as in:
 
@@ -122,6 +122,32 @@ The result of this goal displays:
 i.e., the result of computing the factorial of 5.
 
 Note that if a BASIC program file is run in this way, there is no need to escape double quotes.
+For example, if the file `hello.bas` contains:
+
+```basic
+10 print "Hello!"
+```
+
+then, the result of:
+
+```prolog
+?- run('./bas/hello.bas').
+```
+
+is the same as before.
+
+A program with several lines can be written as an argument of run. 
+For example:
+
+```prolog
+?- run("
+10 X = 5 : Z = 1
+20 FOR I = 1 TO X STEP 1
+30 Z = Z * I
+40 NEXT I
+50 PRINT Z
+").
+```
 
 
 ### 2.2. Starting the BASIC Debugger from SWI-Prolog
@@ -259,6 +285,9 @@ For example, given the next call:
 
 A breakpoint can be set at the second statement (`02`) of the first line (`00010`), as displayed next:
 
+<img src="https://github.com/fernanucm/PLBASIC/blob/main/images/Breakpoint.jpg" alt= "Setting a breakpoint in the debugger" width="240px">
+
+<!---
 ```
 +-------- PROGRAM ---------+              
 |00010:01 FOR I = 0 TO 9   |              
@@ -267,6 +296,7 @@ A breakpoint can be set at the second statement (`02`) of the first line (`00010
 |                          |
 +--------------------------+     
 ```
+--->
 
 To set that breakpoint, first the down arrow has been pressed before setting on the breakpoint with the key `b` (then, the arrow up has been pressed to list all the program).
 Note that both variables and instructions are case-insensitive.
