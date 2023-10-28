@@ -12,7 +12,7 @@ Some example programs have been adapted from [8bitworkshop](https://8bitworkshop
 ## 1. Introduction
 
 This repository includes a text-based interface for both an interpreter and debugger of BASIC programs, implemented in SWI-Prolog.
-Being multiplatform, it can be used directly from sources (folder `./src`) having installed SWI-Prolog 8.x or above. 
+Being multiplatform, it can be used directly from sources having installed SWI-Prolog 8._x_ or above. 
 However, this project has been tested on Windows 10 and some differences may exist with respect to other OS's.
 
 This project was motivated to emulate the Microsoft BASIC implementation in the Seiko UC 2000 watch from the 80's, coupled with the Seiko UC 2200 for writing (and printing) programs.
@@ -30,7 +30,7 @@ Some features are not present while others are added.
 
 ### 1.1 Requirements
 
-PLBASIC requires SWI-Prolog 8.x or higher already installed. In addition, the pack EDCG must be installed in SWI-Prolog. For example:
+PLBASIC requires SWI-Prolog 8._x_ or higher already installed. In addition, the pack EDCG must be installed in SWI-Prolog. For example:
 
 ```prolog
 C:\> swipl
@@ -100,6 +100,8 @@ Then, assuming that you started SWI-Prolog from the folder where PLBASIC is loca
 ```
 
 This results in:
+
+<img src="https://github.com/fernanucm/PLBASIC/blob/main/images/screen.jpg" alt= "The interpreter screen" width="200px">
 
 ```
 +- SCREEN -+
