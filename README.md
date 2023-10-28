@@ -103,6 +103,18 @@ This results in:
 
 <img src="https://github.com/fernanucm/PLBASIC/blob/main/images/Screen.jpg" alt= "The interpreter screen" width="110px">
 
+<!---
+```
++- SCREEN -+
+|Hello!    |
+|          |
+|          |
+|          |
+|          |
++lc(1,0)---+
+```
+--->
+
 Here, `SCREEN` is the panel surrounding the watch screen. 
 Below, the numbers in the term `lc(1,0)` show the current line an column (both 0-based) of the cursor. 
 In this case, the cursor is finally placed at the second line (number 1) and first column (number 0) because the `print` command moves the cursor to the next line.
@@ -118,6 +130,18 @@ In this case, single quotes `'` are used to delimit the file path, as opposed to
 The result of this goal displays:
 
 <img src="https://github.com/fernanucm/PLBASIC/blob/main/images/Factorial.jpg" alt= "The result of the factorial program in the interpreter" width="110px">
+
+<!---
+```
++- SCREEN -+
+| 120      |
+|          |
+|          |
+|          |
+|          |
++lc(1,0)---+
+```
+--->
 
 i.e., the result of computing the factorial of 5.
 
