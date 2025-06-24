@@ -594,7 +594,7 @@ Returns the tangent of the `x` argument. The angle is in radians.
 
 * Logical operators: `=` `>` `<` `>=` `>=` `<>` `AND` `OR` `NOT`
 
-Parentheses can be used as needed to surround expressions.
+Parentheses can be used as needed to enclose expressions.
 
 ### Additional supported features
 
